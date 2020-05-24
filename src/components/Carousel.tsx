@@ -66,8 +66,10 @@ const Carousel = ({ slides, slideDuration = 7000 }: Props): JSX.Element => {
       if (newDuration !== 0) {
         setDuration(newDuration);
       }
+    } else {
+      setDuration(slideDuration);
     }
-  }, [activeSlide]);
+  }, [activeSlide, slideDuration]);
 
   /**
    * Let's focus on these three callbacks

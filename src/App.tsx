@@ -18,15 +18,20 @@ export default function App(): JSX.Element {
         slides={[
           {
             src: "https://placekitten.com/320/240",
+            type: "image/jpg",
           },
           {
-            src: "https://placekitten.com/321/240",
+            src:
+              "https://static.videezy.com/system/resources/previews/000/035/284/original/MVI_4230.mp4",
+            type: "video/mp4",
           },
           {
-            src: "https://placekitten.com/322/240",
+            src: "https://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4",
+            type: "video/mp4",
           },
           {
-            src: "https://placekitten.com/323/240",
+            src: "https://vjs.zencdn.net/v/oceans.mp4",
+            type: "video/mp4",
           },
         ]}
       />

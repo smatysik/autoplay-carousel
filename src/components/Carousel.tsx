@@ -1,4 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
+
+import Video from "./Video";
 
 import { useTimer } from "../hooks/useTimer";
 
@@ -6,6 +8,7 @@ import { getSeconds, getPercentage } from "../utils";
 
 export interface Slide {
   src: string;
+  type: string;
 }
 
 interface Props {
@@ -15,19 +18,32 @@ interface Props {
 
 const Carousel = ({ slides, slideDuration = 7000 }: Props): JSX.Element => {
   const [activeSlide, setActiveSlide] = useState(0);
-  const duration = slideDuration;
+  const [duration, setDuration] = useState(slideDuration);
+  const [currentVideoTime, setCurrentVideoTime] = useState(0);
+  const videoDurationRefs = useRef<number[]>([]);
+
   const { pause, reset, start, time } = useTimer(duration);
+
+  const isVideoSlide = useCallback(
+    (index: number): boolean => {
+      return slides[index].type.includes("video");
+    },
+    [slides],
+  );
 
   /* Change slide after slide duration */
   useEffect(() => {
-    if (time >= duration) {
+    // If we are currently on a video slide,
+    // only a video end event will trigger a slide change
+    if (!isVideoSlide(activeSlide) && time >= duration) {
       setActiveSlide((activeSlide + 1) % slides.length);
       reset();
     }
-  }, [activeSlide, duration, slides, reset, time]);
+  }, [activeSlide, duration, isVideoSlide, slides, reset, time]);
 
   /* Reset states after slide changes */
   useEffect(() => {
+    setCurrentVideoTime(0);
     start();
   }, [activeSlide, reset, start]);
 
@@ -37,19 +53,77 @@ const Carousel = ({ slides, slideDuration = 7000 }: Props): JSX.Element => {
     return () => pause();
   }, [start, pause]);
 
+  /**
+   * If we are on a video slide, set the video's duration
+   * to be the slide duration
+   */
+  useEffect(() => {
+    if (
+      videoDurationRefs.current.length &&
+      videoDurationRefs.current[activeSlide]
+    ) {
+      const newDuration = videoDurationRefs.current[activeSlide];
+      if (newDuration !== 0) {
+        setDuration(newDuration);
+      }
+    } else {
+      setDuration(slideDuration);
+    }
+  }, [activeSlide, slideDuration]);
+
+  /**
+   * Let's focus on these three callbacks
+   */
+  /* Get video durations after load */
+  const handleVideoLoad = (duration: number, index: number) => {
+    videoDurationRefs.current[index] = duration;
+    if (index === 0) {
+      setDuration(duration);
+    }
+  };
+
+  /* Update current video time */
+  const handleVideoUpdate = (currentTime: number) => {
+    setCurrentVideoTime(currentTime);
+  };
+
+  /* Page to the next slide on video end */
+  const handleVideoEnd = () => {
+    setActiveSlide((activeSlide + 1) % slides.length);
+    reset();
+  };
+
   return (
     <>
       <div>Slide duration = {getSeconds(duration)}s</div>
       <div>Elapsed slide time = {getSeconds(time)}s</div>
-      <div>{`Slide progress = ${getPercentage(time, duration)}%`}</div>
       <div>
-        {slides.map(({ src }, index) => {
+        {isVideoSlide(activeSlide)
+          ? `Slide progress = ${getPercentage(currentVideoTime, duration)}%`
+          : `Slide progress = ${getPercentage(time, duration)}%`}
+      </div>
+      <div>
+        {slides.map(({ src, type }, index) => {
           return (
             <div
               key={index}
               style={{ display: activeSlide === index ? "block" : "none" }} // "carousel"
             >
-              <img src={src} alt={""} />
+              {isVideoSlide(index) ? (
+                <Video
+                  src={src}
+                  type={type}
+                  activeIndex={activeSlide}
+                  index={index}
+                  onLoadVideoCallback={(duration) => {
+                    handleVideoLoad(duration, index);
+                  }}
+                  onUpdateVideoCallback={handleVideoUpdate}
+                  onEndedVideoCallback={handleVideoEnd}
+                />
+              ) : (
+                <img src={src} alt={""} />
+              )}
             </div>
           );
         })}

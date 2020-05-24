@@ -16,7 +16,10 @@ interface Props {
   slideDuration?: number;
 }
 
-const Carousel = ({ slides, slideDuration = 7000 }: Props): JSX.Element => {
+const AutoplayCarousel = ({
+  slides,
+  slideDuration = 7000,
+}: Props): JSX.Element => {
   const [activeSlide, setActiveSlide] = useState(0);
   const [duration, setDuration] = useState(slideDuration);
   const [currentVideoTime, setCurrentVideoTime] = useState(0);
@@ -133,4 +136,4 @@ const Carousel = ({ slides, slideDuration = 7000 }: Props): JSX.Element => {
   );
 };
 
-export default Carousel;
+export default AutoplayCarousel;

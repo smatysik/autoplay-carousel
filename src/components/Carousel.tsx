@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 
 import { useTimer } from "../hooks/useTimer";
 
-import { formatTime, getPercentage } from "../utils";
+import { getSeconds, getPercentage } from "../utils";
 
 export interface Slide {
   src: string;
@@ -39,8 +39,8 @@ const Carousel = ({ slides, slideDuration = 7000 }: Props): JSX.Element => {
 
   return (
     <>
-      <div>Slide duration = {formatTime(duration)}s</div>
-      <div>Elapsed slide time = {formatTime(time)}s</div>
+      <div>Slide duration = {getSeconds(duration)}s</div>
+      <div>Elapsed slide time = {getSeconds(time)}s</div>
       <div>{`Slide progress = ${getPercentage(time, duration)}%`}</div>
       <div>
         {slides.map(({ src }, index) => {

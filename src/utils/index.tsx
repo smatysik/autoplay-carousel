@@ -1,4 +1,4 @@
-export const formatTime = (milliseconds: number): number => {
+export const getSeconds = (milliseconds: number): number => {
   return Math.ceil(milliseconds / 1000);
 };
 

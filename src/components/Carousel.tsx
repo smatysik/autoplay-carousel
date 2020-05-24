@@ -107,7 +107,7 @@ const Carousel = ({ slides, slideDuration = 7000 }: Props): JSX.Element => {
               key={index}
               style={{ display: activeSlide === index ? "block" : "none" }} // "carousel"
             >
-              {type.includes("video") ? (
+              {isVideoSlide(index) ? (
                 <Video
                   src={src}
                   type={type}

@@ -22,7 +22,7 @@ export default function App(): JSX.Element {
           },
           {
             src:
-              "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+              "https://static.videezy.com/system/resources/previews/000/035/284/original/MVI_4230.mp4",
             type: "video/mp4",
           },
           {

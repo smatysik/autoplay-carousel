@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import Carousel from "./components/Carousel";
+import AutoplayCarousel from "./components/AutoplayCarousel";
 
 import "./styles.css";
 
@@ -14,7 +14,7 @@ export default function App(): JSX.Element {
         <li>Each video slide will auto-page after video finishes playing</li>
       </ul>
 
-      <Carousel
+      <AutoplayCarousel
         slides={[
           {
             src: "https://placekitten.com/320/240",

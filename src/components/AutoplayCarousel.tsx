@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 
-import Video from "./Video";
+import ImageSlide from "./ImageSlide";
+import VideoSlide from "./VideoSlide";
 
 import { useTimer } from "../hooks/useTimer";
 
@@ -113,7 +114,7 @@ const AutoplayCarousel = ({
               style={{ display: activeSlide === index ? "block" : "none" }} // "carousel"
             >
               {isVideoSlide(index) ? (
-                <Video
+                <VideoSlide
                   src={src}
                   type={type}
                   activeIndex={activeSlide}
@@ -125,7 +126,7 @@ const AutoplayCarousel = ({
                   onEndedVideoCallback={handleVideoEnd}
                 />
               ) : (
-                <img src={src} alt={""} />
+                <ImageSlide src={src} />
               )}
             </div>
           );

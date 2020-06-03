@@ -79,23 +79,23 @@ const AutoplayCarousel = ({
    * Let's focus on these three callbacks
    */
   /* Get video durations after load */
-  const handleVideoLoad = (duration: number, index: number) => {
+  const handleVideoLoad = useCallback((duration: number, index: number) => {
     videoDurationRefs.current[index] = duration;
     if (index === 0) {
       setDuration(duration);
     }
-  };
+  }, []);
 
   /* Update current video time */
-  const handleVideoUpdate = (currentTime: number) => {
+  const handleVideoUpdate = useCallback((currentTime: number) => {
     setCurrentVideoTime(currentTime);
-  };
+  }, []);
 
   /* Page to the next slide on video end */
-  const handleVideoEnd = () => {
+  const handleVideoEnd = useCallback(() => {
     setActiveSlide((activeSlide + 1) % slides.length);
     reset();
-  };
+  }, [activeSlide, reset, slides.length]);
 
   return (
     <>

@@ -117,8 +117,7 @@ const AutoplayCarousel = ({
                 <VideoSlide
                   src={src}
                   type={type}
-                  activeIndex={activeSlide}
-                  index={index}
+                  isActive={index === activeSlide}
                   onLoadVideoCallback={(duration) => {
                     handleVideoLoad(duration, index);
                   }}

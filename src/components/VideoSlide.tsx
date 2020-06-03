@@ -3,7 +3,8 @@ import React, { useState, useEffect, useRef } from "react";
 interface Props {
   src: string;
   type: string;
-  isActive: boolean;
+  activeIndex: number;
+  index: number;
   onLoadVideoCallback?: (duration: number) => void;
   onUpdateVideoCallback?: (currentTime: number) => void;
   onEndedVideoCallback?: () => void;
@@ -12,7 +13,8 @@ interface Props {
 const Video = ({
   src,
   type,
-  isActive,
+  activeIndex,
+  index,
   onLoadVideoCallback,
   onUpdateVideoCallback,
   onEndedVideoCallback,
@@ -25,7 +27,7 @@ const Video = ({
       if (videoRef.current) {
         Promise.resolve(videoRef.current.play())
           .then(() => {
-            console.log(`Playing video ${src}`);
+            console.log(`Playing ${index}. Active index is ${activeIndex}`);
           })
           .catch((error) => {
             console.log(`Play Rejected: ${error.message}`);
@@ -33,10 +35,10 @@ const Video = ({
       }
     };
 
-    if (isLoaded && isActive) {
+    if (isLoaded && index === activeIndex) {
       playVideo();
     }
-  }, [isActive, isLoaded, src]);
+  }, [activeIndex, index, isLoaded]);
 
   const onLoad = (video: HTMLVideoElement) => {
     const duration = video.duration;

@@ -38,13 +38,13 @@ interface VideoLoadPayload {
 
 interface ActionProps {
   type: ActionType;
-  payload?: VideoLoadPayload;
+  payload: VideoLoadPayload;
 }
 
 export const initialState = { slideDurations: [] };
 
 const carouselReducer = (state: StateProps, action: ActionProps) => {
-  const { index, duration } = action.payload || {};
+  const { index, duration } = action.payload;
 
   switch (action.type) {
     case ActionType.VIDEO_LOAD: {

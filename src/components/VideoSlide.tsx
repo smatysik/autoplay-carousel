@@ -76,4 +76,4 @@ const Video = ({
   );
 };
 
-export default Video;
+export default React.memo(Video);

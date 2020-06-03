@@ -4,6 +4,7 @@ import React, {
   useCallback,
   useRef,
   useReducer,
+  useMemo,
 } from "react";
 
 import ImageSlide from "./ImageSlide";
@@ -38,13 +39,13 @@ interface VideoLoadPayload {
 
 interface ActionProps {
   type: ActionType;
-  payload?: VideoLoadPayload;
+  payload: VideoLoadPayload;
 }
 
 export const initialState = { slideDurations: [] };
 
 const carouselReducer = (state: StateProps, action: ActionProps) => {
-  const { index, duration } = action.payload || {};
+  const { index, duration } = action.payload;
 
   switch (action.type) {
     case ActionType.VIDEO_LOAD: {
@@ -138,9 +139,14 @@ const AutoplayCarousel = ({
     });
   }, [slideDurations, slideDurations.length, duration]);
 
-  const handleVideoLoad = (duration: number, index: number) => {
-    dispatch({ type: ActionType.VIDEO_LOAD, payload: { duration, index } });
-  };
+  const { handleVideoLoad } = useMemo(
+    () => ({
+      handleVideoLoad: (duration: number, index: number) => {
+        dispatch({ type: ActionType.VIDEO_LOAD, payload: { duration, index } });
+      },
+    }),
+    [dispatch],
+  );
 
   /* Update current video time */
   const handleVideoUpdate = useCallback((currentTime: number) => {

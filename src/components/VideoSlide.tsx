@@ -5,7 +5,7 @@ interface Props {
   type: string;
   activeIndex: number;
   index: number;
-  onLoadVideoCallback?: (duration: number) => void;
+  onLoadVideoCallback?: (duration: number, index: number) => void;
   onUpdateVideoCallback?: (currentTime: number) => void;
   onEndedVideoCallback?: () => void;
 }
@@ -44,7 +44,7 @@ const Video = ({
     const duration = video.duration;
     setIsLoaded(true);
     console.log("Event: load", { duration });
-    onLoadVideoCallback && onLoadVideoCallback(duration * 1000);
+    onLoadVideoCallback && onLoadVideoCallback(duration * 1000, index);
   };
 
   const onUpdate = () => {
@@ -76,4 +76,4 @@ const Video = ({
   );
 };
 
-export default Video;
+export default React.memo(Video);

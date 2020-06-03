@@ -36,15 +36,15 @@ interface VideoLoadPayload {
   index?: number;
 }
 
-interface ActionProps {
+export interface ActionProps {
   type: ActionType;
-  payload?: VideoLoadPayload;
+  payload: VideoLoadPayload;
 }
 
 export const initialState = { slideDurations: [] };
 
 const carouselReducer = (state: StateProps, action: ActionProps) => {
-  const { index, duration } = action.payload || {};
+  const { index, duration } = action.payload;
 
   switch (action.type) {
     case ActionType.VIDEO_LOAD: {
@@ -138,10 +138,6 @@ const AutoplayCarousel = ({
     });
   }, [slideDurations, slideDurations.length, duration]);
 
-  const handleVideoLoad = (duration: number, index: number) => {
-    dispatch({ type: ActionType.VIDEO_LOAD, payload: { duration, index } });
-  };
-
   /* Update current video time */
   const handleVideoUpdate = useCallback((currentTime: number) => {
     setCurrentVideoTime(currentTime);
@@ -175,9 +171,7 @@ const AutoplayCarousel = ({
                   type={type}
                   activeIndex={activeSlide}
                   index={index}
-                  onLoadVideoCallback={(duration) => {
-                    handleVideoLoad(duration, index);
-                  }}
+                  dispatch={dispatch}
                   onUpdateVideoCallback={handleVideoUpdate}
                   onEndedVideoCallback={handleVideoEnd}
                 />

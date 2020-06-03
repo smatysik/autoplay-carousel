@@ -138,9 +138,9 @@ const AutoplayCarousel = ({
     });
   }, [slideDurations, slideDurations.length, duration]);
 
-  const handleVideoLoad = (duration: number, index: number) => {
+  const handleVideoLoad = useCallback((duration: number, index: number) => {
     dispatch({ type: ActionType.VIDEO_LOAD, payload: { duration, index } });
-  };
+  }, []);
 
   /* Update current video time */
   const handleVideoUpdate = useCallback((currentTime: number) => {
@@ -175,9 +175,7 @@ const AutoplayCarousel = ({
                   type={type}
                   activeIndex={activeSlide}
                   index={index}
-                  onLoadVideoCallback={(duration) => {
-                    handleVideoLoad(duration, index);
-                  }}
+                  onLoadVideoCallback={handleVideoLoad}
                   onUpdateVideoCallback={handleVideoUpdate}
                   onEndedVideoCallback={handleVideoEnd}
                 />

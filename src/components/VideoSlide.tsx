@@ -42,7 +42,7 @@ const Video = ({
   }, [activeIndex, index, isLoaded]);
 
   const onLoad = (video: HTMLVideoElement) => {
-    const duration = video.duration;
+    const duration = video.duration * 1000; // milliseconds
     setIsLoaded(true);
     console.log("Event: load", { duration });
     dispatch({ type: ActionType.VIDEO_LOAD, payload: { duration, index } });

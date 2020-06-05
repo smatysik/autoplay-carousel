@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, {
+  useState,
+  useEffect,
+  useCallback,
+  useRef,
+  useMemo,
+} from "react";
 
 import ImageSlide from "./ImageSlide";
 import VideoSlide from "./VideoSlide";
@@ -97,15 +103,8 @@ const AutoplayCarousel = ({
     reset();
   }, [activeSlide, reset, slides.length]);
 
-  return (
-    <>
-      <div>Slide duration = {getSeconds(duration)}s</div>
-      <div>Elapsed slide time = {getSeconds(time)}s</div>
-      <div>
-        {isVideoSlide(activeSlide)
-          ? `Slide progress = ${getPercentage(currentVideoTime, duration)}%`
-          : `Slide progress = ${getPercentage(time, duration)}%`}
-      </div>
+  const cachedSlides = useMemo(() => {
+    return (
       <div>
         {slides.map(({ src, type }, index) => {
           return (
@@ -132,6 +131,19 @@ const AutoplayCarousel = ({
           );
         })}
       </div>
+    );
+  }, [activeSlide, handleVideoUpdate, handleVideoEnd, handleVideoLoad]);
+
+  return (
+    <>
+      <div>Slide duration = {getSeconds(duration)}s</div>
+      <div>Elapsed slide time = {getSeconds(time)}s</div>
+      <div>
+        {isVideoSlide(activeSlide)
+          ? `Slide progress = ${getPercentage(currentVideoTime, duration)}%`
+          : `Slide progress = ${getPercentage(time, duration)}%`}
+      </div>
+      {cachedSlides}
       <div>{`Slide ${activeSlide + 1} of ${slides.length}`}</div>
     </>
   );

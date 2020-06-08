@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, {
+  useState,
+  useEffect,
+  useCallback,
+  useRef,
+  useReducer,
+} from "react";
 
 import ImageSlide from "./ImageSlide";
 import VideoSlide from "./VideoSlide";
@@ -17,10 +23,54 @@ interface Props {
   slideDuration?: number;
 }
 
+export enum ActionType {
+  VIDEO_LOAD = "VIDEO_LOAD",
+}
+
+interface StateProps {
+  slideDurations: number[];
+}
+
+interface VideoLoadPayload {
+  duration?: number;
+  index?: number;
+}
+
+interface ActionProps {
+  type: ActionType;
+  payload: VideoLoadPayload;
+}
+
+export const initialState = { slideDurations: [] };
+
+const carouselReducer = (state: StateProps, action: ActionProps) => {
+  const { index, duration } = action.payload;
+
+  switch (action.type) {
+    case ActionType.VIDEO_LOAD: {
+      if ((!!index || index === 0) && !!duration) {
+        const slideDurations = [...state.slideDurations];
+        slideDurations[index] = duration;
+
+        return {
+          ...state,
+          slideDurations,
+        };
+      }
+    }
+    default: {
+      console.log("featuredCarouselReducer", `${action.type} not found`);
+      return state;
+    }
+  }
+};
+
 const AutoplayCarousel = ({
   slides,
   slideDuration = 7000,
 }: Props): JSX.Element => {
+  const [state, dispatch] = useReducer(carouselReducer, initialState);
+  const { slideDurations } = state;
   const [activeSlide, setActiveSlide] = useState(0);
   const [duration, setDuration] = useState(slideDuration);
   const [currentVideoTime, setCurrentVideoTime] = useState(0);
@@ -79,11 +129,17 @@ const AutoplayCarousel = ({
    * Let's focus on these three callbacks
    */
   /* Get video durations after load */
+  useEffect(() => {
+    slideDurations.forEach((item: number, index: number) => {
+      videoDurationRefs.current[index] = item;
+      if (index === 0) {
+        setDuration(duration);
+      }
+    });
+  }, [slideDurations, slideDurations.length, duration]);
+
   const handleVideoLoad = useCallback((duration: number, index: number) => {
-    videoDurationRefs.current[index] = duration;
-    if (index === 0) {
-      setDuration(duration);
-    }
+    dispatch({ type: ActionType.VIDEO_LOAD, payload: { duration, index } });
   }, []);
 
   /* Update current video time */
@@ -119,9 +175,7 @@ const AutoplayCarousel = ({
                   type={type}
                   activeIndex={activeSlide}
                   index={index}
-                  onLoadVideoCallback={(duration) => {
-                    handleVideoLoad(duration, index);
-                  }}
+                  onLoadVideoCallback={handleVideoLoad}
                   onUpdateVideoCallback={handleVideoUpdate}
                   onEndedVideoCallback={handleVideoEnd}
                 />

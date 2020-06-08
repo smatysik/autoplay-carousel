@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
+import { ActionType, ActionProps } from "./AutoplayCarousel";
 
 interface Props {
   src: string;
   type: string;
   activeIndex: number;
   index: number;
-  onLoadVideoCallback?: (duration: number) => void;
+  dispatch: ({ type, payload }: ActionProps) => void;
   onUpdateVideoCallback?: (currentTime: number) => void;
   onEndedVideoCallback?: () => void;
 }
@@ -15,7 +16,7 @@ const Video = ({
   type,
   activeIndex,
   index,
-  onLoadVideoCallback,
+  dispatch,
   onUpdateVideoCallback,
   onEndedVideoCallback,
 }: Props): JSX.Element => {
@@ -41,10 +42,10 @@ const Video = ({
   }, [activeIndex, index, isLoaded]);
 
   const onLoad = (video: HTMLVideoElement) => {
-    const duration = video.duration;
+    const duration = video.duration * 1000; // milliseconds
     setIsLoaded(true);
     console.log("Event: load", { duration });
-    onLoadVideoCallback && onLoadVideoCallback(duration * 1000);
+    dispatch({ type: ActionType.VIDEO_LOAD, payload: { duration, index } });
   };
 
   const onUpdate = () => {
